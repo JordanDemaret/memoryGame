@@ -1,0 +1,23 @@
+img{
+    height: 150px;
+    width: 150px;
+    border: 2px solid black;
+    border-radius: 10%;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    box-shadow: 5px 5px gray;
+}
+
+
+#game-board{
+    width: 700px;
+    display: flex ;
+    justify-content: space-betwee;
+    align-content: center;
+    flex-wrap: wrap;
+}   
+
+
+.flipped{
+    transform: rotateY(180deg)
+}

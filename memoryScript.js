@@ -1,6 +1,5 @@
 const game_board = document.getElementById("game-board")
 const pNrbAttempt = document.getElementById("nbrAttempt")
-//
 
 const data = ["A","B","C","D","E","F","G","H", "A","B","C","D","E","F","G","H"]
 
@@ -36,8 +35,10 @@ data.forEach(function(elem, index){
     
         new_card.src=elem+".png"
         new_card.className=""
-        if (firstCard === 0)
+        if (firstCard === 0){
             firstCard=new_card
+            firstCard.className="disabled"
+        }
         else{
             compare(firstCard, new_card)
         }
@@ -49,12 +50,14 @@ data.forEach(function(elem, index){
 
 
 function compare(elem1, elem2){
+
+    if(elem1 === elem2)
+        return 
     nbrAttempt++
     pNrbAttempt.textContent =`number of attempt ${nbrAttempt}`
     firstCard=0
     if (elem1.alt == elem2.alt){
-        elem1.disable=true
-        elem2.disable=true
+        elem2.className ='disabled'
         nbrPair++
         isEnd()
     }
@@ -63,6 +66,7 @@ function compare(elem1, elem2){
         setTimeout( (elem1, elem2) => {
             elem1.src = "Dos.png"
             elem1.className="flipped"
+            elem1.disable=false
             elem2.src = "Dos.png"
             elem2.className="flipped"
             canEdit=true

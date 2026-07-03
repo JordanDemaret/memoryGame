@@ -136,6 +136,7 @@ function isEnd(){
         if (!oldScore  || oldScore > theScore ){
             localStorage.setItem(nameUser,theScore)
             oldScore = theScore
+            gteTabScore()
             
         } 
         bestScore.textContent = `Your best score (user : ${nameUser}) is ${oldScore}`
@@ -148,7 +149,7 @@ function calScore() {
 
 function gteTabScore(){
     tabScore.innerHTML =""
-    let datascore = Object.keys(localStorage).sort( (x) => localStorage.getItem(x))
+    let datascore = Object.keys(localStorage).sort( (x,y) =>  localStorage.getItem(x)- localStorage.getItem(y))
     console.log(datascore)  
     datascore.forEach((nameUser) =>{
         const lineScore = document.createElement('li')

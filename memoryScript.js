@@ -1,7 +1,12 @@
 const game_board = document.getElementById("game-board")
 const pNrbAttempt = document.getElementById("nbrAttempt")
 const timer = document.getElementById('timer')
-const reset = document.getElementById('reset')
+const resetBtn = document.getElementById('reset')
+const pairFind = document.getElementById('pairFind')
+const score = document.getElementById('score')
+const name = document.getElementById('name')
+const bestScore = document.getElementById('bestScore')
+const tabScore = document.getElementById('tabScore')
 const data = ["A","B","C","D","E","F","G","H", "A","B","C","D","E","F","G","H"]
 
 
@@ -16,14 +21,15 @@ function random(){
     }
 }
 
-let nbrPair
-let firstCard, canEdit 
-let nbrAttempt
-let sec,min,t
+let nbrPair =0
+let firstCard =0 , canEdit =true
+let nbrAttempt=0
+let sec=0,min=0
+let t
 
-init()
-
-
+timer.textContent = `Timer : ${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`
+pNrbAttempt.textContent =`number of attempt ${nbrAttempt}`
+pairFind.textContent = `Pair find : ${nbrPair}/${data.length/2}`
 
 function starTimer(){
     t= setInterval( ()=>{
@@ -35,18 +41,25 @@ function starTimer(){
         timer.textContent = `Timer : ${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`
     }, 1000)
 }
-    
-function init(){
+
+function reset(){    
     nbrPair=0
     firstCard=0, canEdit =true
     nbrAttempt =0
     sec=0 ,min =0
     clearInterval(t)
-
-    random()
     timer.textContent = `Timer : ${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`
     pNrbAttempt.textContent =`number of attempt ${nbrAttempt}`
+    pairFind.textContent = `Pair find : ${nbrPair}/${data.length/2}`
+    score.textContent =''
+    createGame()
 
+}
+    
+
+
+function createGame(){
+    random()
     game_board.innerHTML =""
     data.forEach(function(elem, index){
 
@@ -88,6 +101,7 @@ function compare(elem1, elem2){
     if (elem1.alt == elem2.alt){
         elem2.className ='disabled'
         nbrPair++
+        pairFind.textContent = `Pair find : ${nbrPair}/${data.length/2}`
         isEnd()
     }
     else{
@@ -106,12 +120,53 @@ function compare(elem1, elem2){
 }
 
 function isEnd(){
-    if (nbrPair === 8){
+    if (nbrPair === data.length/2){
         clearInterval(t)
         const h2 = document.createElement('h2')
         h2.textContent = 'The Game is End. You are a Winer'
         game_board .before(h2)
+        const theScore =calScore()
+        score.textContent = `Your score : ${theScore}`
+
+        let nameUser =name.value
+        let oldScore = localStorage.getItem(nameUser)
+        if (!nameUser)
+            nameUser = 'other'
+            
+        if (!oldScore  || oldScore > theScore ){
+            localStorage.setItem(nameUser,theScore)
+            oldScore = theScore
+            
+        } 
+        bestScore.textContent = `Your best score (user : ${nameUser}) is ${oldScore}`
+
     }
 }
+function calScore() {
+    return (nbrAttempt- (data.length/2)) + sec +min*60
+}
 
-reset.addEventListener('click', () => init())
+function gteTabScore(){
+    tabScore.innerHTML =""
+    let datascore = Object.keys(localStorage).sort( (x) => localStorage.getItem(x))
+    console.log(datascore)  
+    datascore.forEach((nameUser) =>{
+        const lineScore = document.createElement('li')
+        lineScore.textContent = `User ${nameUser} Score : ${localStorage.getItem(nameUser)}`
+        tabScore.append(lineScore)
+    })
+
+    
+
+    /*let cles Triees = Object.keys(localStorage).sort();
+// 2. Parcourir les clés dans le bon ordre pour lire les données
+clesTriees.forEach(cle => {
+    let valeur = localStorage.getItem(cle);
+    console.log(`Clé : ${cle} -> Valeur : ${valeur}`);
+});*/
+}
+
+
+resetBtn.addEventListener('click', reset)
+gteTabScore()
+createGame()
